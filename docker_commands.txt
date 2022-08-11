@@ -1,0 +1,19 @@
+Create the MySQL Container for storing the NiFi Result
+    docker run -dit --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=debezium -e MYSQL_USER=mysqluser -e MYSQL_PASSWORD=mysqlpw debezium/example-mysql:1.6
+
+Create the Nifi Container for pulling the API data
+    docker run --name nifi -p 8080:8080 -p 8443:8443 --link mysql:mysql -d apache/nifi:1.12.0
+
+Debezium Connect Container to MSK
+    docker run -dit --name connect -p 8083:8083 -e GROUP_ID=1 -e CONFIG_STORAGE_TOPIC=panzerflow-configs -e OFFSET_STORAGE_TOPIC=panzerflow-offsets -e STATUS_STORAGE_TOPIC=panzerflow_statuses -e BOOTSTRAP_SERVERS=b-2.panzerstreaming.crgei7.c25.kafka.us-east-1.amazonaws.com:9092,b-3.panzerstreaming.crgei7.c25.kafka.us-east-1.amazonaws.com:9092,b-1.panzerstreaming.crgei7.c25.kafka.us-east-1.amazonaws.com:9092 -e KAFKA_VERSION=2.6.2 -e CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=2 -e CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=2 -e CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=2 --link mysql:mysql debezium/connect:1.8.0.Final
+
+SBT
+    docker run -dit -p 3000:8080 -v /home/ec2-user/development/spark-streaming-emr-6.5:/spark-streaming-emr-6.5 hseeberger/scala-sbt:8u222_1.3.5_2.13.1
+    sbt clean assembly
+    
+Move jar file to S3
+    aws s3 cp /home/ec2-user/development/spark-streaming-emr-6.5/target/scala-2.12/wcd-spark-streaming-with-debezium_2.12.8-0.1.jar s3://panzerflow-streaming/jars/spark-streaming.jar
+
+EMR Spark Submit
+    spark-submit --master yarn --deploy-mode client --name panzerflow-stremaing-app --jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar,/usr/lib/spark/jars/httpclient-4.5.9.jar,/usr/share/aws/hmclient/lib/aws-glue-datacatalog-spark-client-* --conf "spark.serializer=org.apache.spark.serializer.KryoSerializer" --conf "spark.sql.hive.convertMetastoreParquet=false" --class weclouddata.streaming.StreamingJob s3://panzerflow-streaming/jars/spark-streaming.jar
+

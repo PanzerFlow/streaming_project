@@ -1,0 +1,9 @@
+SBT
+    docker run -dit -p 3000:8080 -v /home/ec2-user/development/spark-streaming-emr-6.5:/spark-streaming-emr-6.5 hseeberger/scala-sbt:8u222_1.3.5_2.13.1
+    sbt clean assembly
+    
+Move jar file to S3
+    aws s3 cp /home/ec2-user/development/spark-streaming-emr-6.5/target/scala-2.12/wcd-spark-streaming-with-debezium_2.12.8-0.1.jar s3://panzerflow-streaming/jars/spark-streaming.jar
+
+EMR Spark Submit
+    spark-submit --master yarn --deploy-mode client --name panzerflow-stremaing-app --jars /usr/lib/hudi/hudi-spark-bundle.jar,/usr/lib/spark/external/lib/spark-avro.jar,/usr/lib/spark/jars/httpclient-4.5.9.jar,/usr/share/aws/hmclient/lib/aws-glue-datacatalog-spark-client-* --conf "spark.serializer=org.apache.spark.serializer.KryoSerializer" --conf "spark.sql.hive.convertMetastoreParquet=false" --class weclouddata.streaming.StreamingJob s3://panzerflow-streaming/jars/spark-streaming.jar

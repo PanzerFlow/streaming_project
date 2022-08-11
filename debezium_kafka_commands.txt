@@ -1,0 +1,13 @@
+Testing EC2 connection to MSK
+    telnet b-2.panzerstreaming.crgei7.c25.kafka.us-east-1.amazonaws.com 9092
+
+Checking existing topics in MSK
+    ./kafka-topics.sh --list --zookeeper z-3.panzerstreaming.crgei7.c25.kafka.us-east-1.amazonaws.com:2181,z-2.panzerstreaming.crgei7.c25.kafka.us-east-1.amazonaws.com:2181,z-1.panzerstreaming.crgei7.c25.kafka.us-east-1.amazonaws.com:2181
+
+Consuming topics
+    ./kafka-console-consumer.sh  --bootstrap-server b-2.panzerstreaming.crgei7.c25.kafka.us-east-1.amazonaws.com:9092,b-3.panzerstreaming.crgei7.c25.kafka.us-east-1.amazonaws.com:9092,b-1.panzerstreaming.crgei7.c25.kafka.us-east-1.amazonaws.com:9092 --topic dbserver1.demo.bus_status 
+
+Starting the cdc
+    curl -i -X POST -H "Accept:application/json" -H "Content-Type:application/json" localhost:8083/connectors/ -d '{ "name": "inventory-connector", "config": { "connector.class": "io.debezium.connector.mysql.MySqlConnector", "tasks.max": "1", "database.hostname": "mysql", "database.port": "3306", "database.user": "root", "database.password": "debezium", "database.server.id": "184054", "database.server.name": "dbserver1", "database.include.list": "demo", "database.history.kafka.bootstrap.servers": "b-2.panzerstreaming.crgei7.c25.kafka.us-east-1.amazonaws.com:9092,b-3.panzerstreaming.crgei7.c25.kafka.us-east-1.amazonaws.com:9092,b-1.panzerstreaming.crgei7.c25.kafka.us-east-1.amazonaws.com:9092", "database.history.kafka.topic": "dbhistory.demo" } }'
+
+
