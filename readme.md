@@ -1,10 +1,9 @@
 # API Streaming Project (Nifi,Debezium,Kafka,Spark,Hudi)
 
-- [API Streaming Project (Nifi,Debezium,Kafka,Spark,Hudi)]
+- API Streaming Project (Nifi,Debezium,Kafka,Spark,Hudi)
   - [1. Introduction](#1-introduction)
   - [2. Design](#2-design)
   - [3. Output](#3-output)
-  - [4. Reference](#4-reference)
 
 ## 1. Introduction
 The goal of this project is to build a streaming data pipeline to report on live TTC bus/streetcar information. The final output of this project is an interactive PowerBI dashboard, which provides an overview of the route 7 Bathurst Street. 
@@ -46,8 +45,7 @@ Components
 
 
 ## 3. Output
-<img src="https://github.com/PanzerFlow/streaming_project/blob/main/images/PowerBI_MAP.PNG" width=110% height=110%>
+<img src="https://github.com/PanzerFlow/streaming_project/blob/main/images/Streaming_Project.png" width=110% height=110%>
 
-## 4. Reference
 
 
