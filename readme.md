@@ -45,7 +45,7 @@ Components
 
 
 ## 3. Output
-<img src="https://github.com/PanzerFlow/streaming_project/blob/main/images/Streaming_Project.png" width=110% height=110%>
+<img src="https://github.com/PanzerFlow/streaming_project/blob/main/images/PowerBI_MAP.png" width=110% height=110%>
 
 
 
